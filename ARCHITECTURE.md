@@ -57,10 +57,10 @@ Every extractor returns:
 
 ## Adding a new language extractor
 
-1. Add a `extract_<lang>(path: Path) -> dict` function in `extract.py` following the existing pattern (tree-sitter parse → walk nodes → collect `nodes` and `edges` → call-graph second pass for INFERRED `calls` edges).
+1. Add a `extract_<lang>(path: Path) -> dict` function, preferably under `graphify/extractors/`, following the existing pattern (tree-sitter or a deterministic format parser → collect `nodes` and `edges` → call-graph second pass for INFERRED `calls` edges). CFML is an example of the dependency-free parser approach.
 2. Register the file suffix in `extract()` dispatch and `collect_files()`.
 3. Add the suffix to `CODE_EXTENSIONS` in `detect.py` and `_WATCHED_EXTENSIONS` in `watch.py`.
-4. Add the tree-sitter package to `pyproject.toml` dependencies.
+4. If the extractor uses tree-sitter, add its grammar package to `pyproject.toml` dependencies. Dependency-free deterministic parsers need no package entry.
 5. Add a fixture file to `tests/fixtures/` and tests to `tests/test_languages.py`.
 
 ## Security

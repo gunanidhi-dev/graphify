@@ -1,0 +1,33 @@
+// Pure CFScript sample
+// This file contains only CFScript (no CFML tags)
+
+component {
+    
+    property numeric score;
+    
+    public void function init() {
+        variables.score = 0;
+    }
+    
+    public void function addScore(required numeric points) {
+        variables.score += points;
+    }
+    
+    public numeric function getScore() {
+        return variables.score;
+    }
+    
+    public void function reset() {
+        variables.score = 0;
+    }
+    
+    public boolean function isWinner() {
+        return variables.score >= 100;
+    }
+    
+    public string function getRank() {
+        if (variables.score >= 100) return "Gold";
+        if (variables.score >= 50) return "Silver";
+        return "Bronze";
+    }
+}

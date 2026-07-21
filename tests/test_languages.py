@@ -8,7 +8,7 @@ from graphify.extract import (
     extract_swift, extract_go, extract_julia, extract_js, extract_fortran,
     extract_groovy, extract_sln, extract_csproj, extract_xaml, extract_razor,
     extract_dm, extract_dmi, extract_dmm, extract_dmf,
-    extract_powershell, extract_apex, extract_verilog,
+    extract_powershell, extract_apex, extract_cfml, extract_verilog,
     extract_powershell_manifest,
 )
 
@@ -2773,6 +2773,38 @@ def test_apex_no_dangling_edges():
         for e in r["edges"]:
             assert e["source"] in node_ids, f"dangling source in {fixture}: {e}"
             assert e["target"] in node_ids, f"dangling target in {fixture}: {e}"
+
+
+# ---------------CFML (.cfm / .cfc / .cfs)-----------------------------
+
+def test_cfml_extensions_are_enabled_by_default():
+    from graphify.detect import CODE_EXTENSIONS, FileType, classify_file
+    for extension in (".cfm", ".cfc", ".cfs"):
+        assert extension in CODE_EXTENSIONS
+        assert classify_file(Path(f"example{extension}")) == FileType.CODE
+
+
+def test_cfml_component_and_functions():
+    result = extract_cfml(FIXTURES / "sample.cfc")
+    labels = _labels(result)
+    assert "sample" in labels
+    assert ".findUser()" in labels
+    assert ".loadUser()" in labels
+    assert {"contains", "method", "inherits", "implements", "imports"} <= _relations(result)
+
+
+def test_cfml_dispatches_all_extensions(tmp_path):
+    from graphify.extract import _get_extractor
+    for extension in (".cfm", ".cfc", ".cfs"):
+        path = tmp_path / f"example{extension}"
+        path.write_text("function hello() {}", encoding="utf-8")
+        assert _get_extractor(path) is extract_cfml
+
+
+def test_cfml_no_dangling_edges():
+    result = extract_cfml(FIXTURES / "sample.cfc")
+    node_ids = {node["id"] for node in result["nodes"]}
+    assert all(edge["source"] in node_ids and edge["target"] in node_ids for edge in result["edges"])
 
 
 # -- SystemVerilog -------------------------------------------------------------

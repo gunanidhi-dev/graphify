@@ -5,7 +5,7 @@
 graphify processes your files in three passes:
 
 **Pass 1 — Code structure (free, no API calls)**
-Tree-sitter parses your code files and extracts classes, functions, imports, call graphs, and inline comments. This runs locally with no LLM involved. 25 languages supported. SQL files get special treatment: tables, views, foreign keys, and JOIN relationships are extracted deterministically.
+Tree-sitter and built-in deterministic parsers inspect code files for classes/components, functions, imports, call graphs, and inline comments. This runs locally with no LLM involved. CFML (`.cfm`, `.cfc`, `.cfs`) is supported by default without an extra dependency. SQL files get special treatment: tables, views, foreign keys, and JOIN relationships are extracted deterministically.
 
 Code files are not sent to the LLM semantic extractor in the normal pipeline. If a corpus contains only code files, Pass 3 is skipped entirely; semantic extraction is reserved for docs, papers, images, and transcripts.
 

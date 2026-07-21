@@ -33,6 +33,7 @@ from graphify.extractors.base import (  # noqa: F401
 from graphify.extractors.apex import extract_apex  # noqa: F401
 from graphify.extractors.bash import extract_bash  # noqa: F401
 from graphify.extractors.blade import extract_blade  # noqa: F401
+from graphify.extractors.cfml import extract_cfml  # noqa: F401
 from graphify.extractors.csharp import (
     _resolve_cross_file_csharp_imports,
     _resolve_csharp_type_references,
@@ -1759,6 +1760,7 @@ def _canonicalize_csharp_namespace_nodes(all_nodes: list[dict], all_edges: list[
 # may fold case. Everywhere else, case is semantic (`Path` the class vs `PATH` the
 # env var are distinct) and folding manufactures false edges / super-hubs (#1581).
 _CASE_INSENSITIVE_EXTS = frozenset({
+    ".cfm", ".cfc", ".cfs",                                      # CFML identifiers
     ".php", ".phtml", ".php3", ".php4", ".php5", ".php7", ".phps",  # PHP fns/classes
     ".sql",                                                          # SQL identifiers
     ".nim", ".nims", ".nimble",                                      # Nim (style-insensitive)
@@ -1808,6 +1810,7 @@ _LANG_FAMILY_BY_EXT: dict[str, str] = {
     ".dart": "dart",
     ".sh": "shell", ".bash": "shell",
     ".ps1": "powershell", ".psm1": "powershell", ".psd1": "powershell",
+    ".cfm": "cfml", ".cfc": "cfml", ".cfs": "cfml",
 }
 
 
@@ -3946,6 +3949,9 @@ _DISPATCH: dict[str, Any] = {
     ".cshtml": extract_razor,
     ".cls": extract_apex,
     ".trigger": extract_apex,
+    ".cfm": extract_cfml,
+    ".cfc": extract_cfml,
+    ".cfs": extract_cfml,
 }
 
 
